@@ -12,7 +12,7 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   add_compile_options(-fcolor-diagnostics)
 endif()
 
-find_package(dwarfs CONFIG REQUIRED)
+find_package(dwarfs 0.11.0 CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 

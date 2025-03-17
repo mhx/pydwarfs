@@ -32,7 +32,7 @@ class CMakeBuild(build_ext):
 
 setuptools.setup(
     name="pydwarfs",
-    version="0.10.1",
+    version="0.11.0",
     author="Marcus Holland-Moritz",
     description="Python bindings for the DwarFS libraries",
     url="https://github.com/mhx/pydwarfs",
