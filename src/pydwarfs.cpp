@@ -36,17 +36,19 @@ class py_logger : public dwarfs::logger {
     }
   }
 
-  void write(level_type level, std::string const& msg, char const* file,
-             int line) override {
+  void write(level_type level, std::string_view msg,
+             std::source_location loc) override {
     if (level <= threshold_ || level == FATAL) {
       PYBIND11_OVERRIDE_PURE(
           void,           // Return type
           dwarfs::logger, // Parent class
           write,          // Name of function in C++ (must match Python name)
-          level, msg, file, line // Argument(s)
+          level, msg, loc // Argument(s)
       );
     }
   }
+
+  level_type threshold() const { return threshold_; }
 
  private:
   level_type threshold_;
@@ -164,6 +166,22 @@ create_performance_monitor(std::unordered_set<std::string> const& names) {
 } // namespace
 
 PYBIND11_MODULE(_pydwarfs, m) {
+  py::class_<std::source_location>(m, "source_location")
+      // Disable construction from Python by throwing in __init__.
+      .def(py::init([]() -> std::source_location {
+        throw std::runtime_error(
+            "Cannot construct source_location from Python");
+      }))
+      .def_property_readonly("file_name", &std::source_location::file_name,
+                             "The name of the source file")
+      .def_property_readonly("line", &std::source_location::line,
+                             "The line number in the source file")
+      .def_property_readonly("column", &std::source_location::column,
+                             "The column number in the source file")
+      .def_property_readonly("function_name",
+                             &std::source_location::function_name,
+                             "The name of the function");
+
   py::class_<dwarfs::logger, py_logger> logger(m, "logger");
   logger.def(py::init<dwarfs::logger::level_type>())
       .def("write", &dwarfs::logger::write);

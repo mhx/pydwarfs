@@ -8,8 +8,8 @@ class test_logger(pd.logger):
     def __init__(self, level=pd.logger.INFO):
         super().__init__(level)
 
-    def write(self, level, msg, file, line):
-        print(f"{level}: {msg} ({file}:{line})")
+    def write(self, level, msg, loc):
+        print(f"{level}: {msg} ({loc.file_name}:{loc.line})")
 
 
 def make_fs(image):
@@ -145,8 +145,8 @@ def test_dump3(data_fs):
         print(d)
         assert d is not None
         assert d.startswith("DwarFS version 2.4")
-        assert "SECTION num=0, type=BLOCK" in d
-        assert "SECTION num=3, type=SECTION_INDEX" in d
+        assert "SECTION [V2.4] num=0, type=BLOCK" in d
+        assert "SECTION [V2.4] num=3, type=SECTION_INDEX" in d
 
 
 def test_no_history(data_fs):
